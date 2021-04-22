@@ -9,6 +9,7 @@ use super::super::scalar::Scalar;
 use super::super::transcript::ProofTranscript;
 use core::iter;
 use merlin::Transcript;
+use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -101,11 +102,31 @@ impl BulletReductionProof {
       let u = transcript.challenge_scalar(b"u");
       let u_inv = u.invert().unwrap();
 
+      let a_L_vec = (0..n)
+        .into_par_iter()
+        .map(|i| a_L[i] * u + u_inv * a_R[i])
+        .collect::<Vec<Scalar>>();
+
+      let b_L_vec = (0..n)
+        .into_par_iter()
+        .map(|i| b_L[i] * u_inv + u * b_R[i])
+        .collect::<Vec<Scalar>>();
+
+      let G_L_vec = (0..n)
+        .into_par_iter()
+        .map(|i| GroupElement::vartime_multiscalar_mul(&[u_inv, u], &[G_L[i], G_R[i]]))
+        .collect::<Vec<GroupElement>>();
+
       for i in 0..n {
-        a_L[i] = a_L[i] * u + u_inv * a_R[i];
-        b_L[i] = b_L[i] * u_inv + u * b_R[i];
-        G_L[i] = GroupElement::vartime_multiscalar_mul(&[u_inv, u], &[G_L[i], G_R[i]]);
+        a_L[i] = a_L_vec[i];
+        b_L[i] = b_L_vec[i];
+        G_L[i] = G_L_vec[i];
       }
+      //for i in 0..n {
+      //a_L[i] = a_L[i] * u + u_inv * a_R[i];
+      //b_L[i] = b_L[i] * u_inv + u * b_R[i];
+      //G_L[i] = GroupElement::vartime_multiscalar_mul(&[u_inv, u], &[G_L[i], G_R[i]]);
+      //}
 
       blind_fin = blind_fin + blind_L * u * u + blind_R * u_inv * u_inv;
 
