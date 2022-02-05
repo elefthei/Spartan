@@ -2,7 +2,6 @@
 #![feature(test)]
 #![feature(int_log)]
 #![doc = include_str!("../README.md")]
-#![deny(missing_docs)]
 
 extern crate byteorder;
 extern crate core;
@@ -309,7 +308,7 @@ impl SNARKGens {
 /// `SNARK` holds a proof produced by Spartan SNARK
 #[derive(Serialize, Deserialize, Debug)]
 pub struct SNARK {
-  r1cs_sat_proof: R1CSProof,
+  pub r1cs_sat_proof: R1CSProof,
   inst_evals: (Scalar, Scalar, Scalar),
   r1cs_eval_proof: R1CSEvalProof,
 }
@@ -482,7 +481,7 @@ impl NIZKGens {
 /// `NIZK` holds a proof produced by Spartan NIZK
 #[derive(Serialize, Deserialize, Debug)]
 pub struct NIZK {
-  r1cs_sat_proof: R1CSProof,
+  pub r1cs_sat_proof: R1CSProof,
   r: (Vec<Scalar>, Vec<Scalar>),
 }
 
