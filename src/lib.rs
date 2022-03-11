@@ -1,7 +1,6 @@
 #![allow(non_snake_case)]
 #![feature(test)]
 #![feature(int_log)]
-#![doc = include_str!("../README.md")]
 
 extern crate byteorder;
 extern crate core;

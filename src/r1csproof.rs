@@ -20,7 +20,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct R1CSProof {
-  comm_vars: PolyCommitment,
+  pub comm_vars: PolyCommitment,
   sc_proof_phase1: ZKSumcheckInstanceProof,
   claims_phase2: (
     CompressedGroup,
